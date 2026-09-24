@@ -1,7 +1,9 @@
-<script>
-import { upsertAgent } from "../api.js";
+<script lang="ts">
+import { defineComponent } from "vue";
+import { toPageError, upsertAgent } from "../api";
+import type { PageError } from "../types";
 
-export default {
+export default defineComponent({
   name: "AddAgentPage",
   data() {
     return {
@@ -12,7 +14,7 @@ export default {
         mobileNumber: "",
       },
       saving: false,
-      error: null,
+      error: null as PageError | null,
       saved: false,
       created: false,
     };
@@ -33,13 +35,13 @@ export default {
         this.created = Boolean(response.created);
         this.saved = true;
       } catch (err) {
-        this.error = err;
+        this.error = toPageError(err);
       } finally {
         this.saving = false;
       }
     },
   },
-};
+});
 </script>
 
 <template>

@@ -82,7 +82,7 @@ erDiagram
     }
 ```
 
-A rendered diagram is also available at [`data-model.html`](./data-model.html) (open it in a browser).
+Open [`data-model.html`](./data-model.html) in a browser to see this Mermaid ERD rendered. GitHub and most Markdown previews also render the chart above.
 
 ## Tables, Columns, and Constraints
 

@@ -8,21 +8,7 @@
     :root {
       --ink: #1c1917;
       --muted: #57534e;
-      --line: #d6d3d1;
       --paper: #faf7f2;
-      --card: #ffffff;
-      --agent: #14532d;
-      --agent-bg: #ecfdf3;
-      --property: #1e3a5f;
-      --property-bg: #eff6ff;
-      --family: #7c2d12;
-      --family-bg: #fff7ed;
-      --tenant: #4a044e;
-      --tenant-bg: #fdf4ff;
-      --note: #713f12;
-      --note-bg: #fefce8;
-      --reminder: #9f1239;
-      --reminder-bg: #fff1f2;
     }
 
     * { box-sizing: border-box; }
@@ -64,62 +50,40 @@
     }
 
     .diagram-wrap {
-      padding: 0 24px 48px;
+      padding: 0 24px 32px;
       overflow-x: auto;
     }
 
-    svg {
-      display: block;
-      margin: 0 auto;
-      max-width: 1040px;
+    .mermaid {
+      display: flex;
+      justify-content: center;
     }
 
-    .table-card {
-      fill: var(--card);
-      stroke: var(--line);
-      stroke-width: 1.25;
-    }
-
-    .table-head { font-weight: 700; font-size: 14px; }
-    .table-col { font-family: "Avenir Next", "Segoe UI", sans-serif; font-size: 11.5px; }
-    .pk { fill: #166534; }
-    .fk { fill: #1d4ed8; }
-    .uk { fill: #a16207; }
-
-    .legend {
+    .legend,
+    section.rules {
       max-width: 1040px;
       margin: 0 auto 56px;
       padding: 0 48px;
-      display: flex;
-      gap: 24px;
-      flex-wrap: wrap;
       font-family: "Avenir Next", "Segoe UI", sans-serif;
       font-size: 13px;
       color: var(--muted);
     }
 
-    .legend span { display: inline-flex; align-items: center; gap: 8px; }
-    .swatch {
-      width: 10px;
-      height: 10px;
-      border-radius: 2px;
-    }
-
     section.rules {
-      max-width: 1040px;
-      margin: 0 auto 72px;
-      padding: 0 48px;
+      margin-bottom: 72px;
+      font-size: 16px;
+      font-family: inherit;
     }
 
     section.rules h2 {
       font-size: 22px;
       margin: 0 0 16px;
+      color: var(--ink);
     }
 
     section.rules ul {
       margin: 0;
       padding-left: 20px;
-      color: var(--muted);
     }
 
     section.rules li { margin-bottom: 8px; }
@@ -137,140 +101,98 @@
   </header>
 
   <div class="diagram-wrap">
-    <svg viewBox="0 0 1040 780" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Entity relationship diagram">
-      <defs>
-        <marker id="crow" markerWidth="12" markerHeight="12" refX="10" refY="6" orient="auto">
-          <path d="M2,2 L10,6 L2,10 M10,6 L2,6" fill="none" stroke="#57534e" stroke-width="1.4" />
-        </marker>
-        <marker id="one" markerWidth="10" markerHeight="10" refX="8" refY="5" orient="auto">
-          <path d="M8,1 L8,9" stroke="#57534e" stroke-width="1.6" />
-        </marker>
-      </defs>
+    <pre class="mermaid">
+erDiagram
+    AGENT ||--o{ PROPERTY : manages
+    AGENT ||--o{ NOTE : writes
+    AGENT ||--o{ REMINDER : schedules
+    FAMILY ||--o{ PROPERTY : occupies
+    FAMILY ||--|{ TENANT : includes
+    PROPERTY ||--|{ TENANT : houses
+    PROPERTY ||--o{ NOTE : concerns
+    PROPERTY ||--o{ REMINDER : concerns
 
-      <!-- relationship lines -->
-      <g stroke="#57534e" stroke-width="1.35" fill="none">
-        <!-- agent to property -->
-        <path d="M220,210 L220,268" marker-end="url(#crow)" marker-start="url(#one)" />
-        <!-- property to tenant -->
-        <path d="M220,430 L220,500" marker-end="url(#crow)" marker-start="url(#one)" />
-        <!-- family to property -->
-        <path d="M430,350 L318,350" marker-end="url(#crow)" marker-start="url(#one)" />
-        <!-- family to tenant -->
-        <path d="M520,430 L360,530" marker-end="url(#crow)" marker-start="url(#one)" />
-        <!-- agent to note -->
-        <path d="M318,120 L560,120" marker-end="url(#crow)" marker-start="url(#one)" />
-        <!-- agent to reminder -->
-        <path d="M318,170 L780,210" marker-end="url(#crow)" marker-start="url(#one)" />
-        <!-- property to note -->
-        <path d="M318,300 L600,210" marker-end="url(#crow)" marker-start="url(#one)" />
-        <!-- property to reminder -->
-        <path d="M318,380 L780,300" marker-end="url(#crow)" marker-start="url(#one)" />
-      </g>
+    AGENT {
+        uuid id PK
+        varchar first_name
+        varchar last_name
+        varchar email UK
+        varchar mobile_number
+        timestamptz created_at
+        timestamptz updated_at
+    }
 
-      <!-- AGENT -->
-      <g>
-        <rect x="40" y="40" width="278" height="170" rx="8" class="table-card" />
-        <rect x="40" y="40" width="278" height="32" rx="8" fill="#14532d" />
-        <rect x="40" y="56" width="278" height="16" fill="#14532d" />
-        <text x="56" y="62" fill="#ecfdf3" class="table-head">AGENT</text>
-        <text x="56" y="88" class="table-col"><tspan class="pk">PK</tspan>  id UUID</text>
-        <text x="56" y="106" class="table-col">      first_name VARCHAR(100) NOT NULL</text>
-        <text x="56" y="124" class="table-col">      last_name VARCHAR(100) NOT NULL</text>
-        <text x="56" y="142" class="table-col"><tspan class="uk">UK</tspan>  email VARCHAR(255) NOT NULL UNIQUE</text>
-        <text x="56" y="160" class="table-col">      mobile_number VARCHAR(20) NOT NULL</text>
-        <text x="56" y="178" class="table-col">      created_at TIMESTAMPTZ NOT NULL</text>
-        <text x="56" y="196" class="table-col">      updated_at TIMESTAMPTZ NOT NULL</text>
-      </g>
+    PROPERTY {
+        uuid id PK
+        uuid agent_id FK
+        uuid family_id FK
+        varchar street_address
+        varchar city
+        varchar state
+        varchar postal_code
+        timestamptz created_at
+        timestamptz updated_at
+    }
 
-      <!-- PROPERTY -->
-      <g>
-        <rect x="40" y="268" width="278" height="162" rx="8" class="table-card" />
-        <rect x="40" y="268" width="278" height="32" rx="8" fill="#1e3a5f" />
-        <rect x="40" y="284" width="278" height="16" fill="#1e3a5f" />
-        <text x="56" y="290" fill="#eff6ff" class="table-head">PROPERTY</text>
-        <text x="56" y="316" class="table-col"><tspan class="pk">PK</tspan>  id UUID</text>
-        <text x="56" y="334" class="table-col"><tspan class="fk">FK</tspan>  agent_id → AGENT</text>
-        <text x="56" y="352" class="table-col"><tspan class="fk">FK</tspan>  family_id → FAMILY</text>
-        <text x="56" y="370" class="table-col">      street_address, city, state, postal_code</text>
-        <text x="56" y="388" class="table-col">      created_at TIMESTAMPTZ NOT NULL</text>
-        <text x="56" y="406" class="table-col">      updated_at TIMESTAMPTZ NOT NULL</text>
-      </g>
+    FAMILY {
+        uuid id PK
+        varchar name
+        timestamptz created_at
+        timestamptz updated_at
+    }
 
-      <!-- TENANT -->
-      <g>
-        <rect x="40" y="500" width="278" height="180" rx="8" class="table-card" />
-        <rect x="40" y="500" width="278" height="32" rx="8" fill="#4a044e" />
-        <rect x="40" y="516" width="278" height="16" fill="#4a044e" />
-        <text x="56" y="522" fill="#fdf4ff" class="table-head">TENANT  (1+ per property)</text>
-        <text x="56" y="548" class="table-col"><tspan class="pk">PK</tspan>  id UUID</text>
-        <text x="56" y="566" class="table-col"><tspan class="fk">FK</tspan>  property_id → PROPERTY</text>
-        <text x="56" y="584" class="table-col"><tspan class="fk">FK</tspan>  family_id → FAMILY</text>
-        <text x="56" y="602" class="table-col">      first_name, last_name NOT NULL</text>
-        <text x="56" y="620" class="table-col">      email, mobile_number</text>
-        <text x="56" y="638" class="table-col">      is_primary BOOLEAN NOT NULL</text>
-        <text x="56" y="656" class="table-col">      created_at, updated_at TIMESTAMPTZ</text>
-      </g>
+    TENANT {
+        uuid id PK
+        uuid property_id FK
+        uuid family_id FK
+        varchar first_name
+        varchar last_name
+        varchar email
+        varchar mobile_number
+        boolean is_primary
+        timestamptz created_at
+        timestamptz updated_at
+    }
 
-      <!-- FAMILY -->
-      <g>
-        <rect x="430" y="292" width="250" height="138" rx="8" class="table-card" />
-        <rect x="430" y="292" width="250" height="32" rx="8" fill="#7c2d12" />
-        <rect x="430" y="308" width="250" height="16" fill="#7c2d12" />
-        <text x="446" y="314" fill="#fff7ed" class="table-head">FAMILY</text>
-        <text x="446" y="340" class="table-col"><tspan class="pk">PK</tspan>  id UUID</text>
-        <text x="446" y="358" class="table-col">      name VARCHAR(150) NOT NULL</text>
-        <text x="446" y="376" class="table-col">      created_at TIMESTAMPTZ NOT NULL</text>
-        <text x="446" y="394" class="table-col">      updated_at TIMESTAMPTZ NOT NULL</text>
-        <text x="446" y="412" class="table-col">      one family per property</text>
-      </g>
+    NOTE {
+        uuid id PK
+        uuid agent_id FK
+        uuid property_id FK
+        varchar title
+        text body
+        timestamptz created_at
+        timestamptz updated_at
+    }
 
-      <!-- NOTE -->
-      <g>
-        <rect x="560" y="40" width="220" height="170" rx="8" class="table-card" />
-        <rect x="560" y="40" width="220" height="32" rx="8" fill="#713f12" />
-        <rect x="560" y="56" width="220" height="16" fill="#713f12" />
-        <text x="576" y="62" fill="#fefce8" class="table-head">NOTE</text>
-        <text x="576" y="88" class="table-col"><tspan class="pk">PK</tspan>  id UUID</text>
-        <text x="576" y="106" class="table-col"><tspan class="fk">FK</tspan>  agent_id → AGENT</text>
-        <text x="576" y="124" class="table-col"><tspan class="fk">FK</tspan>  property_id → PROPERTY</text>
-        <text x="576" y="142" class="table-col">      title VARCHAR(200)</text>
-        <text x="576" y="160" class="table-col">      body TEXT</text>
-        <text x="576" y="178" class="table-col">      created_at, updated_at</text>
-      </g>
-
-      <!-- REMINDER -->
-      <g>
-        <rect x="800" y="210" width="220" height="188" rx="8" class="table-card" />
-        <rect x="800" y="210" width="220" height="32" rx="8" fill="#9f1239" />
-        <rect x="800" y="226" width="220" height="16" fill="#9f1239" />
-        <text x="816" y="232" fill="#fff1f2" class="table-head">REMINDER</text>
-        <text x="816" y="258" class="table-col"><tspan class="pk">PK</tspan>  id UUID</text>
-        <text x="816" y="276" class="table-col"><tspan class="fk">FK</tspan>  agent_id → AGENT</text>
-        <text x="816" y="294" class="table-col"><tspan class="fk">FK</tspan>  property_id → PROPERTY</text>
-        <text x="816" y="312" class="table-col">      title VARCHAR(200)</text>
-        <text x="816" y="330" class="table-col">      action_type VARCHAR(50)</text>
-        <text x="816" y="348" class="table-col">      due_at TIMESTAMPTZ</text>
-        <text x="816" y="366" class="table-col">      completed_at nullable</text>
-        <text x="816" y="384" class="table-col">      created_at, updated_at</text>
-      </g>
-    </svg>
+    REMINDER {
+        uuid id PK
+        uuid agent_id FK
+        uuid property_id FK
+        varchar title
+        varchar action_type
+        timestamptz due_at
+        timestamptz completed_at
+        timestamptz created_at
+        timestamptz updated_at
+    }
+    </pre>
   </div>
 
-  <div class="legend">
-    <span><i class="swatch" style="background:#166534"></i> PK primary key</span>
-    <span><i class="swatch" style="background:#1d4ed8"></i> FK foreign key</span>
-    <span><i class="swatch" style="background:#a16207"></i> UK unique key</span>
-    <span>Crow’s foot = many &nbsp;·&nbsp; bar = one</span>
-  </div>
+  <p class="legend">PK primary key · FK foreign key · UK unique key · one-or-more tenants per property</p>
 
   <section class="rules">
     <h2>Integrity rules</h2>
     <ul>
       <li>An agent may manage many properties. A property has exactly one agent. The in-memory API still allows deleting an agent; leftover properties keep the old <code>agent_id</code>.</li>
-      <li>Each property is occupied by exactly one family, and must have one or more tenants. Every tenant on that property must share the property’s <code>family_id</code>.</li>
+      <li>Each property is occupied by exactly one family, and must have one or more tenants. Every tenant on that property must share the property's <code>family_id</code>.</li>
       <li>Property notes and reminders are owned by the agent and point at a property. <code>action_type</code> is any non-empty string up to 50 characters (built-ins plus custom). A separate agent-only notes API has no <code>property_id</code>.</li>
       <li>Every table carries <code>created_at</code> and <code>updated_at</code>. Email on <code>agents</code> is unique.</li>
     </ul>
   </section>
+
+  <script type="module">
+    import mermaid from "https://cdn.jsdelivr.net/npm/mermaid@11/dist/mermaid.esm.min.mjs";
+    mermaid.initialize({ startOnLoad: true, theme: "neutral" });
+  </script>
 </body>
 </html>

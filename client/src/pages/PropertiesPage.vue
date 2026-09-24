@@ -1,7 +1,9 @@
-<script>
-import { createPropertyNote, createPropertyReminder, listProperties } from "../api.js";
+<script lang="ts">
+import { defineComponent } from "vue";
+import { createPropertyNote, createPropertyReminder, listProperties, toPageError } from "../api";
+import type { PageError, PropertyView } from "../types";
 
-const actionLabels = {
+const actionLabels: Record<string, string> = {
   maintenance: "Maintenance",
   pest_control: "Pest control",
   inspection: "Inspection",
@@ -10,17 +12,17 @@ const actionLabels = {
 
 const builtInActions = ["maintenance", "pest_control", "inspection", "other"];
 
-export default {
+export default defineComponent({
   name: "PropertiesPage",
   data() {
     return {
-      properties: [],
+      properties: [] as PropertyView[],
       loading: true,
-      error: null,
+      error: null as PageError | null,
       savingNote: false,
       savingReminder: false,
-      noteError: null,
-      reminderError: null,
+      noteError: null as PageError | null,
+      reminderError: null as PageError | null,
       note: {
         propertyId: "",
         title: "",
@@ -33,9 +35,9 @@ export default {
         customAction: "",
         dueAt: "",
       },
-      expanded: {},
-      openMenuId: null,
-      activeModal: null,
+      expanded: {} as Record<string, boolean>,
+      openMenuId: null as string | null,
+      activeModal: null as "note" | "reminder" | null,
     };
   },
   mounted() {
@@ -58,7 +60,7 @@ export default {
       return this.reminder.actionType === "other";
     },
     savedActions() {
-      const extras = new Set();
+      const extras = new Set<string>();
       for (const property of this.properties) {
         for (const reminder of property.reminders || []) {
           if (reminder.actionType && !builtInActions.includes(reminder.actionType)) {
@@ -82,12 +84,12 @@ export default {
         const response = await listProperties();
         this.properties = response.data;
       } catch (err) {
-        this.error = err;
+        this.error = toPageError(err);
       } finally {
         this.loading = false;
       }
     },
-    formatWhen(value) {
+    formatWhen(value: string) {
       return new Date(value).toLocaleString();
     },
     currentDateTimeLocal() {
@@ -95,39 +97,39 @@ export default {
       const local = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
       return local.toISOString().slice(0, 16);
     },
-    actionLabel(type) {
+    actionLabel(type: string) {
       return actionLabels[type] || type;
     },
-    isExpanded(propertyId) {
+    isExpanded(propertyId: string) {
       return Boolean(this.expanded[propertyId]);
     },
-    toggleTenants(propertyId) {
+    toggleTenants(propertyId: string) {
       this.expanded = {
         ...this.expanded,
         [propertyId]: !this.expanded[propertyId],
       };
       this.closeMenu();
     },
-    toggleMenu(propertyId, event) {
+    toggleMenu(propertyId: string, event: Event) {
       event.stopPropagation();
       this.openMenuId = this.openMenuId === propertyId ? null : propertyId;
     },
     closeMenu() {
       this.openMenuId = null;
     },
-    onKeydown(event) {
+    onKeydown(event: KeyboardEvent) {
       if (event.key === "Escape") {
         this.closeModal();
         this.closeMenu();
       }
     },
-    openNoteForm(propertyId) {
+    openNoteForm(propertyId: string) {
       this.note = { propertyId, title: "", body: "" };
       this.noteError = null;
       this.activeModal = "note";
       this.closeMenu();
     },
-    openReminderForm(propertyId) {
+    openReminderForm(propertyId: string) {
       this.reminder = {
         propertyId,
         title: "",
@@ -155,7 +157,7 @@ export default {
         this.closeModal();
         await this.load({ silent: true });
       } catch (err) {
-        this.noteError = err;
+        this.noteError = toPageError(err);
       } finally {
         this.savingNote = false;
       }
@@ -170,7 +172,7 @@ export default {
       this.reminderError = null;
       const actionType = this.reminderActionType();
       if (!actionType) {
-        this.reminderError = new Error("Enter a custom action");
+        this.reminderError = { message: "Enter a custom action" };
         return;
       }
       this.savingReminder = true;
@@ -185,13 +187,13 @@ export default {
         this.closeModal();
         await this.load({ silent: true });
       } catch (err) {
-        this.reminderError = err;
+        this.reminderError = toPageError(err);
       } finally {
         this.savingReminder = false;
       }
     },
   },
-};
+});
 </script>
 
 <template>

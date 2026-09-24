@@ -1,13 +1,15 @@
-<script>
-import { listAgents } from "../api.js";
+<script lang="ts">
+import { defineComponent } from "vue";
+import { listAgents, toPageError } from "../api";
+import type { Agent, PageError } from "../types";
 
-export default {
+export default defineComponent({
   name: "DashboardPage",
   data() {
     return {
-      agent: null,
+      agent: null as Agent | null,
       loading: true,
-      error: null,
+      error: null as PageError | null,
     };
   },
   async created() {
@@ -23,22 +25,22 @@ export default {
         const agentsResponse = await listAgents();
         const current = agentsResponse.data[0];
         if (!current) {
-          this.error = new Error("No agent is available");
+          this.error = { message: "No agent is available" };
           return;
         }
 
         this.agent = current;
       } catch (err) {
-        this.error = err;
+        this.error = toPageError(err);
       } finally {
         this.loading = false;
       }
     },
-    formatWhen(value) {
+    formatWhen(value: string) {
       return new Date(value).toLocaleString();
     },
   },
-};
+});
 </script>
 
 <template>

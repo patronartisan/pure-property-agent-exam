@@ -1,11 +1,13 @@
-<script>
-import { listAgents, updateAgent } from "../api.js";
+<script lang="ts">
+import { defineComponent } from "vue";
+import { listAgents, toPageError, updateAgent } from "../api";
+import type { Agent, PageError } from "../types";
 
-export default {
+export default defineComponent({
   name: "SettingsPage",
   data() {
     return {
-      agent: null,
+      agent: null as Agent | null,
       form: {
         firstName: "",
         lastName: "",
@@ -14,7 +16,7 @@ export default {
       },
       loading: true,
       saving: false,
-      error: null,
+      error: null as PageError | null,
       saved: false,
     };
   },
@@ -30,7 +32,7 @@ export default {
       try {
         const current = (await listAgents()).data[0];
         if (!current) {
-          this.error = new Error("No agent is available");
+          this.error = { message: "No agent is available" };
           return;
         }
         this.agent = current;
@@ -41,15 +43,18 @@ export default {
           mobileNumber: current.mobileNumber,
         };
       } catch (err) {
-        this.error = err;
+        this.error = toPageError(err);
       } finally {
         this.loading = false;
       }
     },
-    formatWhen(value) {
+    formatWhen(value: string) {
       return new Date(value).toLocaleString();
     },
     async submit() {
+      if (!this.agent) {
+        return;
+      }
       this.error = null;
       this.saved = false;
       this.saving = true;
@@ -64,13 +69,13 @@ export default {
         };
         this.saved = true;
       } catch (err) {
-        this.error = err;
+        this.error = toPageError(err);
       } finally {
         this.saving = false;
       }
     },
   },
-};
+});
 </script>
 
 <template>

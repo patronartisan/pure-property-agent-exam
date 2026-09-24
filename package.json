@@ -6,9 +6,5 @@
     "server": "npm start --prefix server",
     "client": "npm run dev --prefix client",
     "test": "npm test --prefix server"
-  },
-  "devDependencies": {
-    "@types/supertest": "^7.2.1",
-    "supertest": "^7.3.0"
   }
 }
