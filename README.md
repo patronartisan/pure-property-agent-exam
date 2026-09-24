@@ -1,4 +1,4 @@
-# PURE — Property Agent Desk
+# PURE - Property Agent Desk
 
 Full-stack exercise: a property agent manages rental properties, each occupied by one family with one or more tenants. Agents keep notes and reminders for work such as maintenance and pest control.
 
@@ -9,7 +9,7 @@ The required brief is **in-memory Agent CRUD** plus a Vue upsert form. The runni
 | Path | Purpose |
 | --- | --- |
 | [`docs/data-model.md`](docs/data-model.md) | Tables, constraints, relationships, mermaid ER diagram |
-| [`docs/data-model.html`](docs/data-model.html) | Visual ER diagram — open in a browser |
+| [`docs/data-model.html`](docs/data-model.html) | Visual ER diagram - open in a browser |
 | [`docs/api.md`](docs/api.md) | REST contract plus curl examples |
 | [`server/`](server/) | TypeScript Express API, in-memory store |
 | [`client/`](client/) | Vue 3 desk (dashboard, properties, add agent, settings) |
@@ -34,6 +34,11 @@ npm run dev
 - Vue form: [http://localhost:5173](http://localhost:5173)
 
 The Vite dev server proxies `/api` to port 3000.
+
+```bash
+cd server
+npm test
+```
 
 ## Agent attributes
 
@@ -107,9 +112,9 @@ A practical split: the form prevents obvious mistakes; the API remains the last 
 
 ## Data model in brief
 
-- `agents` 1 — * `properties`
-- `families` 1 — * `properties` (one family occupies a property)
-- `properties` 1 — * `tenants` (at least one; all from that family)
-- `agents` 1 — * `notes` and `reminders`, each tied to a property
+- `agents` 1 - * `properties`
+- `families` 1 - * `properties` (one family occupies a property)
+- `properties` 1 - * `tenants` (at least one; all from that family)
+- `agents` 1 - * `notes` and `reminders`, each tied to a property
 
 Full tables, keys, and delete rules: [`docs/data-model.md`](docs/data-model.md).

@@ -191,6 +191,14 @@ export function createReminder(
   );
 }
 
+export function reset() {
+  families.clear();
+  properties.clear();
+  tenants.clear();
+  notes.clear();
+  reminders.clear();
+}
+
 export function seed(agent?: Agent) {
   if (!agent || properties.size > 0) {
     return;

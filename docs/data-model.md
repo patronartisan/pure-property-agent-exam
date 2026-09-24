@@ -255,6 +255,6 @@ These are the differences between the logical schema and the running TypeScript 
 | `reminders.action_type` | Often modelled as a small enum | Any non-empty string ≤ 50 characters |
 | Delete agent | `RESTRICT` while properties exist | Always allowed; properties can keep a stale `agent_id` |
 | Property notes | `property_id` required | Used by Vue and `POST /api/properties/:id/notes` |
-| View one property | — | `GET /api/properties/:id` exists; Vue uses `GET /api/properties` only |
+| View one property | - | `GET /api/properties/:id` exists; Vue uses `GET /api/properties` only |
 | Agent-only notes | Not in the ER diagram | `GET/POST /api/agents/:id/notes`, `DELETE /api/agents/:id/notes/:noteId` |
 | Tenant / family rules | At least one tenant; matching `family_id`; one primary | Held by seed data; no create/update tenant API to re-check them |

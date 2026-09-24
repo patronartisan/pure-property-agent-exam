@@ -45,6 +45,10 @@ export function remove(id: string) {
   return notes.delete(id);
 }
 
+export function reset() {
+  notes.clear();
+}
+
 export function removeByAgent(agentId: string) {
   for (const [id, note] of notes.entries()) {
     if (note.agentId === agentId) {

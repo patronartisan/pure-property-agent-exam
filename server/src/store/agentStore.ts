@@ -97,6 +97,10 @@ export function remove(id: string) {
   return agents.delete(id);
 }
 
+export function reset() {
+  agents.clear();
+}
+
 export function seed() {
   const sample = {
     firstName: "Property",

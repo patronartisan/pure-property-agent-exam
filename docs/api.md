@@ -23,7 +23,7 @@ All agent payloads use:
 - Add Agent (`/agents/new`) calls `PUT /api/agents` (upsert) and stays on the form.
 - Settings (`/settings`) calls `PUT /api/agents/:id` for the current seed agent.
 - Properties (`/properties`) calls `GET /api/properties` and can `POST` notes and reminders. It does not call `GET /api/properties/:id`.
-- List, view-by-id, and delete of agents, and view of one property, are not in the Vue UI — use the curl examples below (or the same URLs in Postman). There is no Postman collection file in the repo.
+- List, view-by-id, and delete of agents, and view of one property, are not in the Vue UI - use the curl examples below (or the same URLs in Postman). There is no Postman collection file in the repo.
 
 ---
 
@@ -190,7 +190,7 @@ Expected: `201` with `{ "data": { ...reminder } }`.
 
 Not used by the Vue client. These notes have **no** `propertyId`.
 
-`GET /api/agents/:id/notes` — notes for one agent.
+`GET /api/agents/:id/notes` - notes for one agent.
 
 `POST /api/agents/:id/notes`
 
@@ -203,7 +203,7 @@ curl -i -X POST http://localhost:3000/api/agents/AGENT_ID/notes \
   }'
 ```
 
-`DELETE /api/agents/:id/notes/:noteId` — `204` or `404`.
+`DELETE /api/agents/:id/notes/:noteId` - `204` or `404`.
 
 ---
 
